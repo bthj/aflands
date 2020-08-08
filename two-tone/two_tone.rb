@@ -25,7 +25,8 @@ gated_distorted_realm_1596725652_finish = 0.7
 gated_distorted_realm_1596725652_velocities =
   [15,31,47,63,79,95,111,127].ring.butlast.stretch(2).reflect
 two_tone_names = ["F4","A4"].ring
-kick_multi = 0.125
+kick_sleep = 0.454
+kick_sleep_multi = 1
 
 playerOpts = {
   attack: gated_distorted_realm_1596725652_attack,
@@ -44,8 +45,19 @@ end
 
 live_loop :kick do
   sync :two_tone
-  (8*kick_multi).round.times do
-    sample :bd_haus, cutoff: rrand(66, 90)
-    sleep 0.454 / kick_multi
+  (8*kick_sleep_multi).round.times do
+    sample :bd_haus, cutoff: rrand(66, 90), amp:1
+    sleep kick_sleep / kick_sleep_multi
   end
 end
+
+with_fx :echo, phase: 0.125, mix: 0.4 do
+  live_loop :cymbal do
+    sync :two_tone
+    (16*kick_sleep_multi).round.times do
+      sample :drum_cymbal_soft, sustain: 0, release: 0.1, hpf_attack:2, amp:0.8
+      sleep kick_sleep / 2 / kick_sleep_multi
+    end
+  end
+end
+
