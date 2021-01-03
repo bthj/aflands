@@ -56,7 +56,7 @@ end
 
 
 live_loop :two_tone do
-  stop if false
+  stop if 0 == 0
   sync :link
   s = gated_distorted_realm_1596725652_player two_tone_names.tick(:two_tone_note_tick),
     gated_distorted_realm_1596725652_velocities.tick(:two_tone_vel_tick),
@@ -67,7 +67,7 @@ end
 
 two_tone_names_b = ["F5","C5"].ring
 live_loop :two_tone_b do
-  stop if true
+  stop if 0 == 0
   sync :link
   # sleep rrand(0.005, 0.01)
   sleep 0.01
@@ -80,25 +80,25 @@ end
 
 
 live_loop :kick do
-  stop if true
+  stop if 0 == 0
   sync :link
   (8*kick_sleep_multi).round.times do
     sample :bd_haus,
       cutoff: rrand(66, 90),
       #cutoff: 100,
-      amp: 1.1
+      amp: 0.8
     sleep kick_sleep / kick_sleep_multi
   end
 end
 
 live_loop :drums do
-  stop if true
+  stop if 0 == 0
   with_fx :wobble, phase: 0.25, wave: 0, res: 0.5, mix:0.0 do
     with_fx :flanger, feedback: 0.1, decay: 2, delay: 5, depth: 5, mix:0 do
       sync :link
       use_random_seed 8 # 9, 10, 11
       (32*kick_sleep_multi).times do
-        sample :bd_haus, rate: 0.35, cutoff: 80, amp: 1.0 if rand < 0.35
+        sample :bd_haus, rate: 0.35, cutoff: 80, amp: 0.7 if rand < 0.35
         sleep (kick_sleep * 0.25)
       end
     end
@@ -108,11 +108,13 @@ end
 
 with_fx :echo, phase: 0.125, mix: 0.4 do
   live_loop :cymbal do
-    stop if false
+    stop if 0 == 0
     sync :link
-    (16*kick_sleep_multi).round.times do
-      sample :drum_cymbal_soft, sustain: 0, release: 0.1, hpf_attack:0.6, amp:1.0, cutoff: 110
-      sleep kick_sleep / 2 / kick_sleep_multi
+    (16
+     #     *kick_sleep_multi
+    ).round.times do
+      sample :drum_cymbal_soft, sustain: 0, release: 0.1, hpf_attack:0.6, amp:0.6, cutoff: 110
+      sleep kick_sleep / 2 # / kick_sleep_multi
     end
   end
 end
@@ -140,13 +142,13 @@ wobblyBell_1597012625_playerOpts = {
 }
 
 live_loop :wobbly_bell do
-  stop if true
+  stop if 0 == 0
   sync :link
   with_fx :echo do
-    with_fx :slicer, phase: 0.125, wave: 2, mix: 1 do
+    with_fx :slicer, phase: 0.125, wave: 2, mix: 1.0 do
       wobbly_bell_1597012625_player wobbly_bell_notes.tick(:wobbly_bell_note_tick),
         wobbly_bell_1597012625_velocities.tick(:wobbly_bell_vel_tick),
-        wobblyBell_1597012625_playerOpts.merge({amp: 0.8, cutoff: 100})
+        wobblyBell_1597012625_playerOpts.merge({amp: 0.5, cutoff: 100})
       sleep gated_distorted_realm_1596725652_sleep - 0.1
     end
   end
@@ -160,8 +162,8 @@ wobbly_bell_1900_note_names = ["C3","C#3","D3","D#3","E3","F3","F#3","G3","G#3",
 wobbly_bell_1900_velocities = [15,31,47,63,79,95,111,127]
 wobbly_bell_1900_duration = 1.90
 wobbly_bell_1900_sleep = wobbly_bell_1900_duration / 4
-wobbly_bell_1900_attack = 0.01
-wobbly_bell_1900_release = 0.1
+wobbly_bell_1900_attack = 0.03
+wobbly_bell_1900_release = 0.03
 wobbly_bell_1900_start = 0
 wobbly_bell_1900_finish = 1
 wobbly_bell_lead_notes = [
@@ -175,17 +177,18 @@ wobbly_bell_lead_notes = [
 wobblyBell_1900_playerOpts = {
   attack: wobbly_bell_1900_attack,
   release: wobbly_bell_1900_release,
-  start: wobbly_bell_1900_start,
-  finish: wobbly_bell_1900_finish
+  sustain: 0.06,
+  # start: wobbly_bell_1900_start,
+  # finish: wobbly_bell_1900_finish
 }
 
 live_loop :wobbly_bell_lead do
-  stop if true
+  stop if 0 == 1
   sync :link
   use_random_seed 1 # 111
-  with_fx :reverb, room: 1, amp:0.5 do
+  with_fx :reverb, room: 1, amp:2 do
     15.times do
-      wobbly_bell_1900_player wobbly_bell_lead_notes.choose, wobbly_bell_1900_velocities[7], wobblyBell_1900_playerOpts
+      wobbly_bell_1900_player wobbly_bell_lead_notes.choose, wobbly_bell_1900_velocities.choose, wobblyBell_1900_playerOpts
       sleep gated_distorted_realm_1596725652_sleep / 16
     end
   end
